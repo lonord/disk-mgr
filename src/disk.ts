@@ -30,7 +30,7 @@ export async function listDisk() {
 }
 
 export async function mountDisk(searchStr: string, mountpoint: string, args: string[], aliasList?: DiskAlias[]) {
-	if (!name || !mountpoint) {
+	if (!searchStr || !mountpoint) {
 		throw new Error('searchStr and mountpoint are required')
 	}
 	const device = await findDeviceWithAlias(searchStr, aliasList)
@@ -38,7 +38,7 @@ export async function mountDisk(searchStr: string, mountpoint: string, args: str
 }
 
 export async function umountDisk(searchStr: string, args: string[], aliasList?: DiskAlias[]) {
-	if (!name) {
+	if (!searchStr) {
 		throw new Error('searchStr are required')
 	}
 	const device = await findDeviceWithAlias(searchStr, aliasList)
@@ -118,7 +118,7 @@ function searchDevicesByName(searchStr: string, devices: DiskDevice[]) {
 			result.push(dev)
 		}
 		if (dev.children && dev.children.length > 0) {
-			searchDevicesByName(searchStr, devices).forEach((d) => result.push(d))
+			searchDevicesByName(searchStr, dev.children).forEach((d) => result.push(d))
 		}
 	}
 	return result
@@ -131,7 +131,7 @@ function searchDevicesByLabel(searchStr: string, devices: DiskDevice[]) {
 			result.push(dev)
 		}
 		if (dev.children && dev.children.length > 0) {
-			searchDevicesByLabel(searchStr, devices).forEach((d) => result.push(d))
+			searchDevicesByLabel(searchStr, dev.children).forEach((d) => result.push(d))
 		}
 	}
 	return result
@@ -144,14 +144,14 @@ function searchDevicesByUUID(searchStr: string, devices: DiskDevice[]) {
 			result.push(dev)
 		}
 		if (dev.children && dev.children.length > 0) {
-			searchDevicesByUUID(searchStr, devices).forEach((d) => result.push(d))
+			searchDevicesByUUID(searchStr, dev.children).forEach((d) => result.push(d))
 		}
 	}
 	return result
 }
 
 async function mount(device: DiskDevice, mountpoint: string, args: string[]) {
-	if (!device.mountpoint) {
+	if (device.mountpoint) {
 		throw new Error(`Device '${device.name}' is already mounted to '${device.mountpoint}'`)
 	}
 	let argsStr = ''
@@ -167,7 +167,7 @@ async function mount(device: DiskDevice, mountpoint: string, args: string[]) {
 }
 
 async function umount(device: DiskDevice, args: string[]) {
-	if (device.mountpoint) {
+	if (!device.mountpoint) {
 		throw new Error(`Device '${device.name}' is not mounted`)
 	}
 	let argsStr = ''
@@ -175,4 +175,9 @@ async function umount(device: DiskDevice, args: string[]) {
 		argsStr = ' ' + args.join(' ')
 	}
 	const cmd = `umount${argsStr} /dev/${device.name}`
+	const r = await execAsync(cmd)
+	log('exec %s -> %j', cmd, r)
+	if (r.stderr) {
+		throw new Error(r.stderr)
+	}
 }

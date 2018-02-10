@@ -1,6 +1,7 @@
 import * as debug from 'debug'
 import { readFile, writeFile } from 'fs'
 import * as mkdirp from 'mkdirp'
+import * as os from 'os'
 import { join } from 'path'
 import { promisify } from 'util'
 
@@ -8,7 +9,7 @@ const readFileAsync = promisify(readFile)
 const writeFileAsync = promisify(writeFile)
 const log = debug('disk-mgr:config')
 
-const dir = '~/.disk-mgr'
+const dir = join(os.homedir(), '.disk-mgr')
 const configFile = join(dir, 'config.json')
 mkdirp.sync(dir)
 

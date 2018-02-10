@@ -4,6 +4,9 @@
   "description": "Disk manager",
   "main": "lib/",
   "types": "lib/",
+  "bin": {
+    "disk-mgr": "lib/cli.js"
+  },
   "scripts": {
     "build": "rimraf lib && tsc -d --inlineSourceMap",
     "prepublishOnly": "npm run build"
@@ -28,6 +31,7 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
+    "commander": "^2.14.1",
     "debug": "^3.1.0",
     "lodash": "^4.17.5",
     "mkdirp": "^0.5.1"
