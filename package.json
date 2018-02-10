@@ -1,0 +1,35 @@
+{
+  "name": "@lonord/disk-mgr",
+  "version": "1.0.0",
+  "description": "Disk manager",
+  "main": "lib/",
+  "types": "lib/",
+  "scripts": {
+    "build": "rimraf lib && tsc -d --inlineSourceMap",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@lonord.name:/~/disk-mgr.git"
+  },
+  "keywords": [
+    "disk",
+    "manager",
+    "mount",
+    "umount"
+  ],
+  "author": "Loy B. <lonord@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/debug": "0.0.30",
+    "@types/lodash": "^4.14.102",
+    "@types/mkdirp": "^0.5.2",
+    "@types/node": "^9.4.4",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "debug": "^3.1.0",
+    "lodash": "^4.17.5",
+    "mkdirp": "^0.5.1"
+  }
+}
